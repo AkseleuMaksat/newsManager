@@ -1,21 +1,18 @@
 package kz.akseleu.newsmanager.model;
 
+
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 public class Tag {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +20,7 @@ public class Tag {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
-    private List<News> news;
+    @ManyToMany(mappedBy = "tags")
+    private Set<News> news;
 }
+

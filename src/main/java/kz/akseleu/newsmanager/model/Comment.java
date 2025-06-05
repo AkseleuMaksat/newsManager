@@ -1,35 +1,26 @@
 package kz.akseleu.newsmanager.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "comment")
+@Table(name = "comments")
 public class Comment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "news_id", nullable = false)
+    @Column(nullable = false)
+    private LocalDateTime created = LocalDateTime.now();
+
+    @ManyToOne
     private News news;
-
-    @Column(nullable = false)
-    private LocalDateTime created;
-
-    @Column(nullable = false)
-    private LocalDateTime modified;
 }

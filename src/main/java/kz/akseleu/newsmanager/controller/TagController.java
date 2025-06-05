@@ -4,44 +4,35 @@ import kz.akseleu.newsmanager.dto.TagDTO;
 import kz.akseleu.newsmanager.model.Tag;
 import kz.akseleu.newsmanager.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/news/tags")
+@RequestMapping("/api/tags")
 public class TagController {
-
-    private TagService tagService;
+    private final TagService tagService;
 
     @Autowired
     public TagController(TagService tagService) {
         this.tagService = tagService;
     }
 
-
     @GetMapping
-    public List<TagDTO> getAllTags() {
-        return tagService.getAllTags();
+    public ResponseEntity<List<Tag>> getAllTags() {
+        return ResponseEntity.ok(tagService.getAllTags());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TagDTO> getTagById(@PathVariable Long id) {
-        TagDTO tagDTO = tagService.getTagById(id);
-        return ResponseEntity.ok(tagDTO);
+    public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
+        return ResponseEntity.ok(tagService.getTagById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TagDTO> createTag(@RequestBody TagDTO tagDTO) {
-        TagDTO newTagDTO = tagService.createTag(tagDTO);
-        return ResponseEntity.ok(newTagDTO);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<TagDTO> updateTag(@PathVariable Long id, @RequestBody TagDTO tagDTO) {
-        TagDTO updatedTagDTO = tagService.updateTag(id, tagDTO);
-        return ResponseEntity.ok(updatedTagDTO);
+    public ResponseEntity<Tag> createTag(@RequestBody Tag tag) {
+        return ResponseEntity.ok(tagService.createTag(tag));
     }
 
     @DeleteMapping("/{id}")

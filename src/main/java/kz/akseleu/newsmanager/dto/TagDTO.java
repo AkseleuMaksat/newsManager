@@ -1,19 +1,11 @@
 package kz.akseleu.newsmanager.dto;
 
+import lombok.Data;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
 public class TagDTO {
-
     private Long id;
     private String name;
 
-    public TagDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }
 

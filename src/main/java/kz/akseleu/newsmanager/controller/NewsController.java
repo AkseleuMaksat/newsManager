@@ -9,38 +9,35 @@ import org.springframework.web.bind.annotation.*;
 import kz.akseleu.newsmanager.service.NewsService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/news")
+@RequestMapping("/api/news")
 public class NewsController {
     private final NewsService newsService;
+
     @Autowired
     public NewsController(NewsService newsService) {
         this.newsService = newsService;
     }
 
     @GetMapping
-    public List<NewsDTO> getAllNews() {
-        return newsService.getAllNews();
+    public ResponseEntity<List<News>> getAllNews() {
+        return ResponseEntity.ok(newsService.getAllNews());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NewsDTO> getNewsById(@PathVariable Long id) {
-        NewsDTO newsDTO = newsService.getNewsById(id);
-        return ResponseEntity.ok(newsDTO);
+    public ResponseEntity<News> getNewsById(@PathVariable Long id) {
+        return ResponseEntity.ok(newsService.getNewsById(id));
     }
 
     @PostMapping
-    public ResponseEntity<NewsDTO> createNews(@RequestBody NewsDTO newsDTO) {
-        NewsDTO newNewsDTO = newsService.createNews(newsDTO);
-        return ResponseEntity.ok(newNewsDTO);
+    public ResponseEntity<News> createNews(@RequestBody News news) {
+        return ResponseEntity.ok(newsService.createNews(news));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NewsDTO> updateNews(@PathVariable Long id, @RequestBody NewsDTO newsDTO) {
-        NewsDTO updatedNewsDTO = newsService.updateNews(id, newsDTO);
-        return ResponseEntity.ok(updatedNewsDTO);
+    public ResponseEntity<News> updateNews(@PathVariable Long id, @RequestBody News news) {
+        return ResponseEntity.ok(newsService.updateNews(id, news));
     }
 
     @DeleteMapping("/{id}")

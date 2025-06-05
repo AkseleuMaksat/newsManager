@@ -2,53 +2,46 @@ package kz.akseleu.newsmanager.service;
 
 import kz.akseleu.newsmanager.dto.TagDTO;
 import kz.akseleu.newsmanager.exeption.ResourceNotFoundException;
+import kz.akseleu.newsmanager.mapper.TagMapper;
 import kz.akseleu.newsmanager.model.Tag;
-import kz.akseleu.newsmanager.model.repository.TagRepository;
+import kz.akseleu.newsmanager.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 public class TagService {
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
     @Autowired
-    public TagService(TagRepository tagRepository) {
+    public TagService(TagRepository tagRepository, TagMapper tagMapper) {
         this.tagRepository = tagRepository;
-    }
-    public List<TagDTO> getAllTags() {
-        List<Tag> tags = tagRepository.findAll();
-        return tags.stream()
-                .map(tag -> new TagDTO(tag.getId(), tag.getName()))
-                .collect(Collectors.toList());
+        this.tagMapper = tagMapper;
     }
 
-    public TagDTO getTagById(Long id) {
-        Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
-        return new TagDTO(tag.getId(), tag.getName());
+    @Transactional(readOnly = true)
+    public List<Tag> getAllTags() {
+        return tagRepository.findAll();
     }
 
-    public TagDTO createTag(TagDTO tagDTO) {
-        Tag tag = new Tag();
-        tag.setName(tagDTO.getName());
-        tag = tagRepository.save(tag);
-        return new TagDTO(tag.getId(), tag.getName());
+    @Transactional(readOnly = true)
+    public Tag getTagById(Long id) {
+        return tagRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + id));
     }
 
-    public TagDTO updateTag(Long id, TagDTO tagDTO) {
-        Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
-        tag.setName(tagDTO.getName());
-        tag = tagRepository.save(tag);
-        return new TagDTO(tag.getId(), tag.getName());
+    @Transactional
+    public Tag createTag(Tag tag) {
+        return tagRepository.save(tag);
     }
 
+    @Transactional
     public void deleteTag(Long id) {
-        Tag tag = tagRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
-        tagRepository.delete(tag);
+        if (!tagRepository.existsById(id)) {
+            throw new IllegalArgumentException("Tag not found with id: " + id);
+        }
+        tagRepository.deleteById(id);
     }
 }
